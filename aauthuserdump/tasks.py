@@ -29,7 +29,7 @@ class UserDumpTasks:
     @staticmethod
     @shared_task(name='aauthuserdump.update_all_users')
     def update_all_users():
-        logger.debug("aauthuserdump.update_all_users running")
+        logger.debug("Exporting all users")
         d = {}
         for u in User.objects.all():
             c = main_char(u)
@@ -41,9 +41,9 @@ class UserDumpTasks:
                 logger.error("User %s's main char (%s) has no char id, skipping", u, c)
                 continue
             groups = user_groups(u)
-            logger.debug("user %s char: %s(%s) groups: %s", u, char_name(c), cid, groups)
+            logger.debug("Export: user %s char: %s(%s) groups: %s", u, char_name(c), cid, groups)
             d[cid] = groups
         path = output_path()
         with open(path, "w") as f:
             json.dump(d, f, sort_keys=True, indent=4, separators=(',', ': '))
-        logger.info("aauthuserdump.update_all_users wrote %s", path)
+        logger.info("Export written to %s", path)
